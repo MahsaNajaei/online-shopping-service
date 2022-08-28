@@ -1,6 +1,7 @@
 package com.example.onlineshoppingservice.model.domain.user;
 
 import com.example.onlineshoppingservice.model.domain.Order;
+
 import javax.persistence.*;
 import java.util.Set;
 
