@@ -4,7 +4,7 @@ import com.example.onlineshoppingservice.exception.ProductNotFoundException;
 import com.example.onlineshoppingservice.exception.ReviewNotAllowedException;
 import com.example.onlineshoppingservice.exception.ReviewNotFoundException;
 import com.example.onlineshoppingservice.model.domain.Product;
-import com.example.onlineshoppingservice.model.domain.aggregation.AggregationSummaryInterface;
+import com.example.onlineshoppingservice.model.domain.aggregation.SummaryAggregationInterface;
 import com.example.onlineshoppingservice.model.domain.review.Comment;
 import com.example.onlineshoppingservice.model.domain.review.Review;
 import com.example.onlineshoppingservice.model.domain.review.Vote;
@@ -104,13 +104,13 @@ public class DefaultReviewService implements ReviewService {
     public ReviewSummaryDto getReviewSummaryByProductId(long productId) throws ReviewNotFoundException {
         List<Comment> comments = getLastNCommentsFromDB(3, productId);
         List<ReviewDto> commentsDto = modelMapper.mapLists(comments, ReviewDto.class);
-        AggregationSummaryInterface aggregationSummaryInterface = reviewRepository.getCommentCountAndVoteAverage(productId);
+        SummaryAggregationInterface summaryAggregationInterface = reviewRepository.getCommentCountAndVoteAverage(productId);
 
-        if (comments.size() == 0 && aggregationSummaryInterface.getAverageVote() == null &&
-                aggregationSummaryInterface.getTotalCommentNumber() == null)
+        if (comments.size() == 0 && summaryAggregationInterface.getAverageVote() == null &&
+                summaryAggregationInterface.getTotalCommentNumber() == null)
             throw new ReviewNotFoundException("There are no reviews available for product with id: " + productId);
 
-        ReviewSummaryDto reviewSummaryDto = modelMapper.map(aggregationSummaryInterface, ReviewSummaryDto.class);
+        ReviewSummaryDto reviewSummaryDto = modelMapper.map(summaryAggregationInterface, ReviewSummaryDto.class);
         reviewSummaryDto.setProductId(productId);
         reviewSummaryDto.setLatestComments(commentsDto);
         return reviewSummaryDto;
@@ -123,7 +123,7 @@ public class DefaultReviewService implements ReviewService {
 
     @Override
     public List<ReviewSummaryDto> getAllReviewSummaries() {
-        List<Comment> comments = reviewRepository.getAllSummaries();
+        List<Comment> comments = reviewRepository.getLastNCommentsOfAllProducts();
         List<Object[]> commentCountResults = reviewRepository.getAllCommentCountsPerProductId();
         List<Object[]> averageVoteResults = reviewRepository.getAverageOfAllConfirmedVotePerProductId();
         return modelMapper.mapReviewSummaryResultsToReviewSummaryDtoList(comments, commentCountResults, averageVoteResults);

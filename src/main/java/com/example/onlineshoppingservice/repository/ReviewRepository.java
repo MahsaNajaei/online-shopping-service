@@ -1,6 +1,6 @@
 package com.example.onlineshoppingservice.repository;
 
-import com.example.onlineshoppingservice.model.domain.aggregation.AggregationSummaryInterface;
+import com.example.onlineshoppingservice.model.domain.aggregation.SummaryAggregationInterface;
 import com.example.onlineshoppingservice.model.domain.review.Comment;
 import com.example.onlineshoppingservice.model.domain.review.Review;
 import com.example.onlineshoppingservice.model.enums.ConfirmationStatus;
@@ -39,10 +39,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query(value = "with newSource As (select * from review where product_id = ?1 and confirmation_status = 'CONFIRMED') " +
             "select (select count(*) from newSource where review_type='COMMENT') as totalCommentNumber," +
             "(select avg(content) from newSource where review_type='VOTE') as averageVote;", nativeQuery = true)
-    AggregationSummaryInterface getCommentCountAndVoteAverage(long productId);
+    SummaryAggregationInterface getCommentCountAndVoteAverage(long productId);
 
     @Query(value = " with newSource as (select *, ROW_NUMBER() OVER (partition by product_id order by id desc) as rn from review where review_type='COMMENT' and confirmation_status='CONFIRMED') select * from newSource where rn <= 3;", nativeQuery = true)
-    List<Comment> getAllSummaries();
+    List<Comment> getLastNCommentsOfAllProducts();
 
     @Query("select product.id, count(Comment) FROM Comment where confirmationStatus = 'CONFIRMED' group by product.id")
     List<Object[]> getAllCommentCountsPerProductId();

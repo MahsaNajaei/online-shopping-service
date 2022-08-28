@@ -12,7 +12,7 @@ import java.util.Date;
 public class ReviewDto {
     private Long id;
     private Date lastUpdatedDate;
-    @NotNull(message = "Review type can't be null!It can either be Comment or Vote")
+    @NotNull(message = "Review type can't be null! It can either be Comment or Vote")
     private ReviewType reviewType;
     private ConfirmationStatus confirmationStatus;
     @NotNull(message = "Reviewer Id has to be specified in order to know who has entered the review!")

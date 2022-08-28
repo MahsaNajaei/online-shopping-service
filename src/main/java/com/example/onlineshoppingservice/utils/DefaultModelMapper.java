@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class DefaultModelMapper extends ModelMapper {
+public class DefaultModelMapper extends ModelMapper{
 
     public <S, T> List<T> mapLists(List<S> sourceList, Class<T> targetClass) {
         List<T> targetList = sourceList.stream().map(element -> map(element, targetClass)).collect(Collectors.toList());
