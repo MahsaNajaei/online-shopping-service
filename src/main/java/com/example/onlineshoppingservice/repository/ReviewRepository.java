@@ -42,7 +42,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     SummaryAggregationInterface getCommentCountAndVoteAverage(long productId);
 
     @Query(value = " with newSource as (select *, ROW_NUMBER() OVER (partition by product_id order by id desc) as rn from review where review_type='COMMENT' and confirmation_status='CONFIRMED') select * from newSource where rn <= 3;", nativeQuery = true)
-    List<Comment> getLastNCommentsOfAllProducts();
+    List<Comment> getLastThreeCommentsOfAllProducts();
 
     @Query("select product.id, count(Comment) FROM Comment where confirmationStatus = 'CONFIRMED' group by product.id")
     List<Object[]> getAllCommentCountsPerProductId();

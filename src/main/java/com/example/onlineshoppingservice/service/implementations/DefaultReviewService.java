@@ -123,7 +123,7 @@ public class DefaultReviewService implements ReviewService {
 
     @Override
     public List<ReviewSummaryDto> getAllReviewSummaries() {
-        List<Comment> comments = reviewRepository.getLastNCommentsOfAllProducts();
+        List<Comment> comments = reviewRepository.getLastThreeCommentsOfAllProducts();
         List<Object[]> commentCountResults = reviewRepository.getAllCommentCountsPerProductId();
         List<Object[]> averageVoteResults = reviewRepository.getAverageOfAllConfirmedVotePerProductId();
         return modelMapper.mapReviewSummaryResultsToReviewSummaryDtoList(comments, commentCountResults, averageVoteResults);
